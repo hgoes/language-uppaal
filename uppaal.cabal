@@ -1,0 +1,13 @@
+Name:		language-uppaal
+Version:	0.1
+Author:		Henning Günther
+Build-Type:	Simple
+Cabal-Version:	>= 1.2
+Description:
+  A parser and pretty printer for the XML-based specification language UPPAAL.
+
+Library
+  Build-Depends: base,hxt,pretty
+  Exposed-Modules:
+    Language.UPPAAL.Syntax
+    Language.UPPAAL.PrettyPrinter
