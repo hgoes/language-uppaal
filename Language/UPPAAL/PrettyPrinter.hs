@@ -239,6 +239,6 @@ prettyInit (InitExpr e) = prettyExpr 0 e
 prettyInit (InitArray arr) = braces (hsep $ punctuate comma (fmap prettyInit arr))
 
 prettySystem :: [(String,String,[Expression])] -> [String] -> Doc
-prettySystem procs sys = vcat $ [ text name <+> char '=' <+> text templ <> parens (prettyExprs args)
+prettySystem procs sys = vcat $ [ text name <+> char '=' <+> text templ <> parens (prettyExprs args) <> semi
                                 | (name,templ,args) <- procs ] ++
                          [ text "system" <+> hsep (punctuate comma (fmap text sys)) <> semi ]
