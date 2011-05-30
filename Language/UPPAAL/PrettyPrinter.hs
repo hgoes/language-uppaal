@@ -73,13 +73,13 @@ instance XmlPickler Template where
                     \(Template n p d l i t) -> (n,fmap (\p' -> fmap (\p'' -> render $ prettyParams p'') p') p,case d of
                                                    [] -> Nothing
                                                    _ -> Just $ render $ prettyDecls d,l,i,t))
-            (xp6Tuple
-             (positional "name" xpText)
-             (xpOption $ positional "parameter" xpText)
-             (xpOption $ xpElem "declaration" xpText)
-             (xpList xpickle)
-             (xpOption $ xpElem "init" $ xpTextAttr "ref")
-             (xpList xpickle))
+            (xpElem "template" (xp6Tuple
+                                (positional "name" xpText)
+                                (xpOption $ positional "parameter" xpText)
+                                (xpOption $ xpElem "declaration" xpText)
+                                (xpList xpickle)
+                                (xpOption $ xpElem "init" $ xpTextAttr "ref")
+                                (xpList xpickle)))
 
 prettyDecls :: [Declaration] -> Doc
 prettyDecls decls = vcat (fmap prettyDecl decls)
