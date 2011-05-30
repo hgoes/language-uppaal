@@ -13,6 +13,9 @@ data Positional a = Positional { position :: Maybe (Integer,Integer)
                                , value :: a
                                } deriving (Eq,Ord,Show,Functor)
 
+noPos :: a -> Positional a
+noPos = Positional Nothing
+
 data Template = Template { templName :: Positional String
                          , templParameter :: Maybe (Positional [Parameter])
                          , templDeclaration :: [Declaration]
