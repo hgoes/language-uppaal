@@ -2,8 +2,12 @@
 module Language.UPPAAL.PrettyPrinter where
 
 import Language.UPPAAL.Syntax
+import Text.XML.HXT.Core (yes,withIndent)
 import Text.XML.HXT.Arrow.Pickle
 import Text.PrettyPrint
+
+prettySpecification :: Specification -> String
+prettySpecification = showPickled [withIndent yes]
 
 instance XmlPickler Specification where
   xpickle = xpElem "nta" $ xpWrap (\(i,d,t,inst,s) -> Spec i (error "Can't parse declarations yet") t inst (error "Can't parse system processes yet") (error "Can't parse system yet"),
@@ -237,4 +241,4 @@ prettyInit (InitArray arr) = braces (hsep $ punctuate comma (fmap prettyInit arr
 prettySystem :: [(String,String,[Expression])] -> [String] -> Doc
 prettySystem procs sys = vcat $ [ text name <+> char '=' <+> text templ <> parens (prettyExprs args)
                                 | (name,templ,args) <- procs ] ++
-                         [ text "system" <+> hsep (punctuate comma (fmap text sys)) ]
+                         [ text "system" <+> hsep (punctuate comma (fmap text sys)) <> semi ]
