@@ -29,12 +29,14 @@ instance XmlPickler LabelKind where
                             "invariant" -> Just Invariant
                             "guard" -> Just Guard
                             "assignment" -> Just Assignment
-                            "synchronisation" -> Just Synchronisation,
+                            "synchronisation" -> Just Synchronisation
+                            "select" -> Just Selection,
                          \val -> case val of
                            Invariant -> "invariant"
                            Guard -> "guard"
                            Assignment -> "assignment"
                            Synchronisation -> "synchronisation"
+                           Selection -> "select"
                          ) (xpTextAttr "kind")
 
 positional :: String -> PU a -> PU (Positional a)
@@ -216,6 +218,7 @@ prettyExpr p (ExprForall var tp e) = precCheck 1 p $ text "forall" <+> parens (t
 prettyExpr p (ExprExists var tp e) = precCheck 1 p $ text "exists" <+> parens (text var <+> colon <+> prettyType tp) <+> prettyExpr 1 e
 prettyExpr _ ExprDeadlock = text "deadlock"
 prettyExpr _ (ExprBool x) = text $ if x then "true" else "false"
+prettyExpr _ (ExprSelect xs) = hsep $ punctuate comma $ fmap (\(var,tp) -> text var <+> colon <+> prettyType tp) xs
 
 prettyStmt :: Statement -> Doc
 prettyStmt (Block decls stmts) = braces $ nest 2 $ (vcat $ (fmap prettyDecl decls)++(fmap prettyStmt stmts))

@@ -36,6 +36,7 @@ data LabelKind = Invariant
                | Guard
                | Assignment
                | Synchronisation
+               | Selection
                deriving (Eq,Ord,Show)
 
 data Label = Label { lblKind :: LabelKind
@@ -104,6 +105,7 @@ data Expression = ExprId String
                 | ExprExists String Type Expression
                 | ExprDeadlock
                 | ExprBool Bool
+                | ExprSelect [(String,Type)]
                 deriving (Eq,Ord,Show)
 
 data Assign = Assign
