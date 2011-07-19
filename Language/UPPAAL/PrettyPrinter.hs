@@ -45,7 +45,10 @@ positional name el = xpWrap (\(p,c) -> Positional p c,\(Positional p c) -> (p,c)
 
 instance XmlPickler (Positional Label) where
   xpickle = positional "label" $ xpWrap (\(x,y) -> Label x (error "Can't parse expressions yet"),
-                                         \lbl -> (lblKind lbl,render $ prettyExprs $ lblContent lbl)) $
+                                         \lbl -> (lblKind lbl,render $ prettyExprs (case lblKind lbl of
+                                                                                       Guard -> text " and"
+                                                                                       _ -> comma
+                                                                                   ) (lblContent lbl))) $
             (xpPair xpickle xpText)
 
 instance XmlPickler (Positional Location) where
@@ -139,8 +142,8 @@ precCheck lp p d = if p >= lp
                    then parens d
                    else d
 
-prettyExprs :: [Expression] -> Doc
-prettyExprs = hsep . punctuate comma . fmap (prettyExpr 0)
+prettyExprs :: Doc -> [Expression] -> Doc
+prettyExprs s = hsep . punctuate s . fmap (prettyExpr 0)
 
 prettyExpr :: Int -> Expression -> Doc
 prettyExpr _ (ExprId name) = text name
@@ -242,6 +245,6 @@ prettyInit (InitExpr e) = prettyExpr 0 e
 prettyInit (InitArray arr) = braces (hsep $ punctuate comma (fmap prettyInit arr))
 
 prettySystem :: [(String,String,[Expression])] -> [String] -> Doc
-prettySystem procs sys = vcat $ [ text name <+> char '=' <+> text templ <> parens (prettyExprs args) <> semi
+prettySystem procs sys = vcat $ [ text name <+> char '=' <+> text templ <> parens (prettyExprs comma args) <> semi
                                 | (name,templ,args) <- procs ] ++
                          [ text "system" <+> hsep (punctuate comma (fmap text sys)) <> semi ]
